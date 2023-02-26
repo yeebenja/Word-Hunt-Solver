@@ -53,18 +53,20 @@ private:
 	bool board_on = false;
 	int search_depth = 6;				// Default Search Depth value is 6
 	string board_filename = "board.txt";// Default Board filename is "board.txt"
-	
+
+	// Found Word struct
 	struct Found_Word {
-		string found_word = "";
+		string word = "";
 		vector<char> cardinal_directions;
 		vector<int> index_directions;
 		unsigned int length = 0;
+		pair<int, int> coordinates;
 	};
-
+	vector<Found_Word> found_word_vect;
 	
-	// EFFECTS: Given character, returns capitolized 
+	// EFFECTS: Given character, returns capitalized 
 	// version of the character
-	char capitol(const char& c) {
+	char capital(const char& c) {
 		if (c >= 65 && c <= 90) return c;
 		else if (c >= 97 && c <= 122) return c - 32;
 		else {
@@ -179,8 +181,14 @@ public:
 
 			// We have original coordinates and directions 
 			// The dirty work is over :)
-
-
+			Found_Word found_word;
+			found_word.word = word;
+			found_word.length = size_of_word;
+			found_word.coordinates = original_gangster;
+			if (cardinal_on) found_word.cardinal_directions = directions;
+			
+			
+			found_word_vect.push_back(found_word);
 			return;
 		}
 
@@ -359,19 +367,34 @@ public:
 		for (size_t row = 0; row < height; ++row) {
 			for (size_t col = 0; col < width; ++col) {
 				board_file >> char_temp;
-				board[row][col] = capitol(char_temp);
+				board[row][col] = capital(char_temp);
 			}
 		}
 	}
 	
-	// EFFECTS: Prints board
+	// EFFECTS: Prints board (taken from previous Word Search
+	// Puzzle Solver Project)
 	void print_board(void) {
-		assert(false);
+		cout << "Word Hunt Puzzle Inputted:" << endl;
+		// Print column
+		cout << " " << " " << " ";
+		for (int col = 0; col < width; ++col) {
+			if (col < 10) cout << col << "  ";
+			else cout << col << " ";
+		}
+		cout << endl;
+		for (int row = 0; row < height; ++row) {
+			if (row < 10) cout << row << " " << " ";
+			else cout << row << " ";
+			for (int col = 0; col < width; ++col) {
+				cout << capital(board[row][col]) << " " << " ";
+			}
+			cout << endl;
+		}
+		cout << endl;
 	}
+	
 };
-
-
-
 
 
 void getMode(int argc, char* argv[], Options& options) {

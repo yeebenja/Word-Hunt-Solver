@@ -1,9 +1,8 @@
-// Word Hunt Solver (for GamePigeon)
+// Word Hunt Solver (for GamePigeon iMessage Word Hunt Game)
 // By: Benjamin Yee (Yu Anmin / Yeo Anmin)
 // Email: yeebenja@umich.edu
 // LinkedIn: https://www.linkedin.com/in/yeebenja/
 // GitHub: https://github.com/yeebenja
-// Project Identifier: AD48FB4835AF347EB0CA8009E24C3B13F8519882
 
 #include <iostream>
 #include <map>
@@ -13,11 +12,14 @@
 #include <vector>
 #include <cctype>
 #include <getopt.h>
+#include <queue>
 
 using namespace std;
 
+// Exceptions classes
 class File_Not_Open{ /*...*/ };
 
+// Option enumerated classes
 enum class Cardinal_Output_Mode { kNone = 0, k_Cardinal_Mode_On, };
 enum class Index_Output_Mode { kNone = 0, k_Index_Mode_On, };
 enum class Point_Output_Mode { kNone = 0, k_Point_Mode_On, };
@@ -25,7 +27,7 @@ enum class Alpha_Output_Mode { kNone = 0, k_Alpha_Mode_On, };
 enum class Search_Depth_Output_Mode { kNone = 0, k_Search_Depth_Mode_On, };
 enum class Board_Mode { kNone = 0, k_Board_Mode_On, };
 
-
+// Options struct
 struct Options {
 	Cardinal_Output_Mode cardinal_output_mode = Cardinal_Output_Mode::kNone;
 	Index_Output_Mode index_output_mode = Index_Output_Mode::kNone;
@@ -62,7 +64,52 @@ private:
 		unsigned int length = 0;
 		pair<int, int> coordinates;
 	};
+
 	vector<Found_Word> found_word_vect;
+
+	// String_Compare Functor
+	class String_Compare {
+	public:
+		// EFFECTS: Returns true if a is alphabetically more than b
+		// Returns false otherwise
+		// NOTES: Just for clarification: words that start with 'A' will be 
+		// prioritized more than words that start with 'B', since 'A' comes first
+		// in the alphabet
+		bool operator()(const string& a, const string& b) {
+			return a > b;
+		}
+	};
+
+	// Point_Compare Functor
+	class Point_Compare {
+	public:
+		// EFFECTS: Returns true if points(a) < points(b)
+		// False otherwise
+		bool operator()(const Found_Word& a, const Found_Word& b){
+			// Note: Length = points
+			if (b.length > a.length) return true;
+			else if (b.length < a.length) return false;
+			else {
+				// If a's and b's lenght is equal, than just compare
+				// which string comes first alphabettically
+				String_Compare c;
+				return c(a.word, b.word);
+			}
+		}
+	};
+
+	// Name_Compare Functor
+	class Name_Compare {
+	public:
+		// EFFECTS: Returns true if word a < word b (alphabetically)
+		bool operator()(const Found_Word& a, const Found_Word& b) {
+			String_Compare c;
+			return c(a.word, b.word);
+		}
+	};
+
+	priority_queue<Found_Word, vector<Found_Word>, Point_Compare> point_pq;
+	priority_queue<Found_Word, vector<Found_Word>, Name_Compare> alpha_pq;
 	
 	// EFFECTS: Given character, returns capitalized 
 	// version of the character
@@ -113,6 +160,127 @@ public:
 		create_board();
 		print_board();
 		run_solver();
+		results();
+	}
+
+	// EFFECTS: Outputs cardinal directions for each found word
+	void cardinal_output(const Found_Word& found_word) {
+		int row = found_word.coordinates.first;
+		int col = found_word.coordinates.second;
+		cout << "Start at row " << row << " col " << col << ", go ";
+		for (auto character : found_word.cardinal_directions) {
+			switch (character) {
+			case 'n':
+				cout << "N ";
+				break;
+			case 'e':
+				cout << "E ";
+				break;
+			case 's':
+				cout << "S ";
+				break;
+			case 'w':
+				cout << "W ";
+				break;
+			case 'a':
+				cout << "NE ";
+				break;
+			case 'b':
+				cout << "SE ";
+				break;
+			case 'c':
+				cout << "SW ";
+				break;
+			case 'd':
+				cout << "NW ";
+				break;
+			}
+		}
+		cout << "\n";
+	}
+	
+	// EFFECTS: Outputs indexes in order of each found word
+	void index_output(const Found_Word& found_word) {
+		int row = found_word.coordinates.first;
+		int col = found_word.coordinates.second;
+		cout << "Start at row " << row << " col " << col << ", go to ";
+		for (auto character : found_word.cardinal_directions) {
+			switch (character) {
+			case 'n':
+				cout << "row " << --row << " col " << col << ", ";
+				break;
+			case 'e':
+				cout << "row " << row << " col " << ++col << ", ";
+				break;
+			case 's':
+				cout << "row " << ++row << " col " << col << ", ";
+				break;
+			case 'w':
+				cout << "row " << row << " col " << --col << ", ";
+				break;
+			case 'a':
+				cout << "row " << --row << " col " << ++col << ", ";
+				break;
+			case 'b':
+				cout << "row " << ++row << " col " << ++col << ", ";
+				break;
+			case 'c':
+				cout << "row " << ++row << " col " << --col << ", ";
+				break;
+			case 'd':
+				cout << "row " << --row << " col " << --col << ", ";
+				break;
+			}
+		}
+		cout << "\n";
+	}
+
+	// EFFECTS: Outputs results based on command line options
+	void results(void) {
+		cout << "---Summary---\n\n";
+		if (point_on) {
+			cout << "---Sorted by Word Length---\n";
+			int current_length = 0;
+			if (!point_pq.empty()) {
+				current_length = point_pq.top().length;
+				cout << "\n--Length: " << current_length << "--\n\n";
+			}
+			while (!point_pq.empty()) {
+				Found_Word found_word_temp = point_pq.top();
+				point_pq.pop();
+				// Separate lengths when printing
+				if (current_length != found_word_temp.length) {
+					cout << "\n--Length: " << found_word_temp.length << "--\n\n";
+					current_length = found_word_temp.length;
+				}
+
+				cout << found_word_temp.word << "\n";
+				if (cardinal_on) cardinal_output(found_word_temp);
+				if (index_on) index_output(found_word_temp);
+			}
+			cout << "\n";
+		}
+
+		if (alpha_on) {
+			cout << "---Sorted Alphabetically---\n\n";
+			while (!alpha_pq.empty()) {
+				Found_Word found_word_temp = alpha_pq.top();
+				alpha_pq.pop();
+				cout << found_word_temp.word << "\n";
+				if (cardinal_on) cardinal_output(found_word_temp);
+				if (index_on) index_output(found_word_temp);
+			}
+			cout << "\n";
+		}
+
+		if (point_on == false && alpha_on == false) {
+			for (auto found_word : found_word_vect) {
+				cout << found_word.word << "\n";
+				if (cardinal_on) cardinal_output(found_word);
+				if (index_on) index_output(found_word);
+			}
+			cout << "\n";
+		}
 	}
 	
 
@@ -127,7 +295,7 @@ public:
 	void find_word(const string& word) {
 		// Case 1: word is longer than search_depth
 		if (word.length() > search_depth) return;
-		bool word_is_apple = word == "APPLE" ? true : false;
+		//bool word_is_apple = word == "APPLE" ? true : false; // for debugging purposes
 	
 		for (int row = 0; row < height; ++row) {
 			for (int col = 0; col < width; ++col) {
@@ -165,7 +333,7 @@ public:
 			return;
 		}
 		// depth > search_depth
-		if (depth > search_depth) {
+		if (depth >= search_depth) {
 			directions.pop_back();
 			return;
 		}
@@ -176,8 +344,8 @@ public:
 		}
 		// Found Case:
 		if (board[row][col] == word[word.length() - 1] && size_of_word - 1 == depth) {
-			cout << word << endl;
-			cout << "found!" << endl;
+			//cout << word << endl;
+			//cout << "found!" << endl;
 
 			// We have original coordinates and directions 
 			// The dirty work is over :)
@@ -187,14 +355,19 @@ public:
 			found_word.coordinates = original_gangster;
 			if (cardinal_on) found_word.cardinal_directions = directions;
 			
-			
 			found_word_vect.push_back(found_word);
+			if (point_on) point_pq.push(found_word);
+			if (alpha_on) alpha_pq.push(found_word);
+
+			directions.pop_back();
 			return;
 		}
 
 
 		// Recursive Case
-		if (prev == 'x') {
+		// Note: a = NE, b = SE, c = SW, d = NW
+		switch (prev) {
+		case 'x': {
 			// North
 			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original_gangster);
 			// Northeast
@@ -211,8 +384,9 @@ public:
 			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original_gangster);
 			// Northwest
 			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original_gangster);
+			break;
 		}
-		else if (prev == 'n') {
+		case 'n': {
 			// North
 			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original_gangster);
 			// Northeast
@@ -227,8 +401,9 @@ public:
 			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original_gangster);
 			// Northwest
 			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original_gangster);
+			break;
 		}
-		else if (prev == 'a') {
+		case 'a':{
 			// North
 			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original_gangster);
 			// Northeast
@@ -243,8 +418,9 @@ public:
 			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original_gangster);
 			// Northwest
 			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original_gangster);
+			break;
 		}
-		else if (prev == 'e') {
+		case 'e': {
 			// North
 			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original_gangster);
 			// Northeast
@@ -259,8 +435,9 @@ public:
 			look_recursive(word, row + 1, col - 1, depth + 1, size_of_word, 'c', directions, original_gangster);
 			// Northwest
 			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original_gangster);
+			break;
 		}
-		else if (prev == 'b') {
+		case 'b': {
 			// North
 			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original_gangster);
 			// Northeast
@@ -275,8 +452,9 @@ public:
 			look_recursive(word, row + 1, col - 1, depth + 1, size_of_word, 'c', directions, original_gangster);
 			// West
 			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original_gangster);
+			break;
 		}
-		else if (prev == 's') {
+		case 's':{
 			// Northeast
 			look_recursive(word, row - 1, col + 1, depth + 1, size_of_word, 'a', directions, original_gangster);
 			// East
@@ -291,8 +469,9 @@ public:
 			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original_gangster);
 			// Northwest
 			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original_gangster);
+			break;
 		}
-		else if (prev == 'c') {
+		case 'c': {
 			// North
 			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original_gangster);
 			// East
@@ -307,8 +486,9 @@ public:
 			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original_gangster);
 			// Northwest
 			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original_gangster);
+			break;
 		}
-		else if (prev == 'w') {
+		case 'w':{
 			// North
 			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original_gangster);
 			// Northeast
@@ -323,8 +503,9 @@ public:
 			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original_gangster);
 			// Northwest
 			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original_gangster);
+			break;
 		}
-		else if (prev == 'd') {
+		case 'd': {
 			// North
 			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original_gangster);
 			// Northeast
@@ -339,8 +520,15 @@ public:
 			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original_gangster);
 			// Northwest
 			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original_gangster);
+			break;
 		}
-		else assert(false);
+		default: {
+			assert(false);
+			break;
+		}
+		} // ...switch (prev)
+
+		directions.pop_back();
 	}
 
 
@@ -375,7 +563,7 @@ public:
 	// EFFECTS: Prints board (taken from previous Word Search
 	// Puzzle Solver Project)
 	void print_board(void) {
-		cout << "Word Hunt Puzzle Inputted:" << endl;
+		cout << "---Word Hunt Puzzle Board Inputted---\n";
 		// Print column
 		cout << " " << " " << " ";
 		for (int col = 0; col < width; ++col) {
@@ -392,6 +580,7 @@ public:
 			cout << endl;
 		}
 		cout << endl;
+		cout << "--Search Depth: " << search_depth << "--\n\n";
 	}
 	
 };
@@ -455,10 +644,8 @@ void getMode(int argc, char* argv[], Options& options) {
 // Main function
 int main(int argc, char** argv) {
 	
-	
 	Options i_got_options; // I can pass that {  } like stockton
 	getMode(argc, argv, i_got_options); // just joshin ima spend this holiday locked in
-
 	Word_Hunt_Solver solver_1(i_got_options);
 	solver_1.run();
 

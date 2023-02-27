@@ -16,7 +16,7 @@
 
 using namespace std;
 
-// Exceptions classes
+// Exception classes
 class File_Not_Open{ /*...*/ };
 
 // Option enumerated classes
@@ -27,7 +27,7 @@ enum class Alpha_Output_Mode { kNone = 0, k_Alpha_Mode_On, };					     // -a
 enum class Search_Depth_Output_Mode { kNone = 0, k_Search_Depth_Mode_On, };			 // -s
 enum class Board_Mode { kNone = 0, k_Board_Mode_On, };								 // -b
 enum class Linear_Search_Only_Mode { kNone = 0, k_Linear_Search_Mode_On, };			 // -l
-enum class Word_Hunt_Mode { kNone = 0, k_Word_Hunt_Mode_On, };
+enum class Word_Hunt_Mode { kNone = 0, k_Word_Hunt_Mode_On, };						 // -w
 enum class Specify_Length_Mode { kNone = 0, k_Specify_Length_Mode_on, };			 // -x
 enum class Specify_First_Letter_Mode { kNone = 0, k_Specify_First_Letter_Mode_On, }; // -y
 
@@ -72,7 +72,7 @@ private:
 	bool specifed_first_letter_on = false;
 	int specified_length = 0;
 	vector<char> specified_first_letters;
-	bool word_hunt_mode = false;
+	bool word_hunt_mode_on = false;
 
 	// Coordinate Compare Functor
 	class Coordinate_Compare {
@@ -97,7 +97,9 @@ private:
 		vector<int> index_directions;
 		unsigned int length = 0;
 		pair<int, int> coordinates;
-		priority_queue<pair<int, int>, vector<pair<int, int>>, Coordinate_Compare> c_pq; // Coordinate Priority Queue
+		//priority_queue<pair<int, int>, vector<pair<int, int>>, Coordinate_Compare> c_pq; // Coordinate Priority Queue
+		vector<pair<int, int>> coordinate_vect;
+		bool word_hunt_valid = false;
 	};
 
 	vector<Found_Word> found_word_vect;
@@ -204,7 +206,7 @@ public:
 		if (board_on == true) board_filename = options.board_filename;
 
 		// Word Hunt Mode
-		if (options.word_hunt_mode == Word_Hunt_Mode::k_Word_Hunt_Mode_On) word_hunt_mode = true;
+		if (options.word_hunt_mode == Word_Hunt_Mode::k_Word_Hunt_Mode_On) word_hunt_mode_on = true;
 
 		// Specified length/first letter
 		if (options.specify_length_mode == Specify_Length_Mode::k_Specify_Length_Mode_on) specifed_length_on = true;
@@ -398,6 +400,9 @@ public:
 					cout << "\n--Length: " << found_word_temp.length << "--\n\n";
 					current_length = found_word_temp.length;
 				}
+				if (word_hunt_mode_on == true) {
+					if (found_word_temp.word_hunt_valid == false) continue;
+				}
 				if (linear_on == false) cout << found_word_temp.word << "\n";
 				if (cardinal_on) cardinal_output(found_word_temp);
 				if (index_on) index_output(found_word_temp);
@@ -411,6 +416,9 @@ public:
 			while (!alpha_pq.empty()) {
 				Found_Word found_word_temp = alpha_pq.top();
 				alpha_pq.pop();
+				if (word_hunt_mode_on == true) {
+					if (found_word_temp.word_hunt_valid == false) continue;
+				}
 				if (linear_on == false) cout << found_word_temp.word << "\n";
 				if (cardinal_on) cardinal_output(found_word_temp);
 				if (index_on) index_output(found_word_temp);
@@ -422,6 +430,9 @@ public:
 			if (linear_on == true) cout << "--Outputting Linear Solutions Only--\n";
 			for (auto found_word : found_word_vect) {
 				//cout << found_word.word << "\n";
+				if (word_hunt_mode_on == true) {
+					if (found_word.word_hunt_valid == false) continue;
+				}
 				if (linear_on == false) cout << found_word.word << "\n";
 				if (cardinal_on) cardinal_output(found_word);
 				if (index_on) index_output(found_word);
@@ -473,7 +484,82 @@ public:
 		
 	}
 
+	// EFFECTS: Given Found Word, returns coordinate vector by using found_word's 
+	// cardinal vector
+	vector<pair<int, int>> cardinal_to_coordinates(const Found_Word& found_word) {
+		vector<pair<int, int>> vect;
+		pair<int, int> p = found_word.coordinates; // Start off with original coordinates first
+		vect.push_back(p);
+		for (auto i : found_word.cardinal_directions) {
+			switch (i) {
+			case 'x': {
+				break;
+			}
+			case 'a': {
+				--p.first; ++p.second;
+				vect.push_back(p);
+				break;
+			}
+			case 'b': {
+				++p.first; ++p.second;
+				vect.push_back(p);
+				break;
+			}
+			case 'c': {
+				++p.first; --p.second;
+				vect.push_back(p);
+				break;
+			}
+			case 'd': {
+				--p.first; --p.second;
+				vect.push_back(p);
+				break;
+			}
+			case 'n': {
+				--p.first;
+				vect.push_back(p);
+				break;
+			}
+			case 'e': {
+				++p.second;
+				vect.push_back(p);
+				break;
+			}
+			case 's': {
+				++p.first;
+				vect.push_back(p);
+				break;
+			}
+			case 'w': {
+				--p.second;
+				vect.push_back(p);
+				break;
+			}
+			default:
+				assert(false);
+				break;
+			}
+		}
+		Coordinate_Compare inst1;
+		sort(vect.begin(), vect.end(), inst1);
+		return vect;
+	}
 
+	// EFFECTS: Returns true if found_word is "Word Hunt Valid"
+	bool is_word_hunt_valid(const Found_Word& found_word) {
+		// Case 1: found_word is length 2
+		if (found_word.word.length() == 2) return true;
+		// Case 2: General Case
+		pair<int, int> temp = found_word.coordinate_vect[0];
+		for (size_t i = 1; i < found_word.coordinate_vect.size(); ++i) {
+			if (temp == found_word.coordinate_vect[i]) return false;
+			temp = found_word.coordinate_vect[i];
+		}
+		return true;
+	}
+
+
+	// EFFECTS: Looks in all directions recursively
 	void look_recursive(const string word, int row, int col, int depth, 
 		int size_of_word, char prev, vector<char>& directions, const pair<int, int>& original_gangster) {
 
@@ -507,7 +593,11 @@ public:
 			found_word.length = size_of_word;
 			found_word.coordinates = original_gangster;
 			if (cardinal_on) found_word.cardinal_directions = directions;
-			
+			assert(found_word.cardinal_directions.size() == found_word.word.length()); // for debugging purposes (sanity check)
+			if (word_hunt_mode_on == true) {
+				found_word.coordinate_vect = cardinal_to_coordinates(found_word);
+				if (is_word_hunt_valid(found_word) == true) found_word.word_hunt_valid = true;
+			}
 			found_word_vect.push_back(found_word);
 			if (point_on) point_pq.push(found_word);
 			if (alpha_on) alpha_pq.push(found_word);

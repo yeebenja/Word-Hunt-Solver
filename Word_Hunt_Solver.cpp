@@ -20,13 +20,17 @@ using namespace std;
 class File_Not_Open{ /*...*/ };
 
 // Option enumerated classes
-enum class Cardinal_Output_Mode { kNone = 0, k_Cardinal_Mode_On, };
-enum class Index_Output_Mode { kNone = 0, k_Index_Mode_On, };
-enum class Point_Output_Mode { kNone = 0, k_Point_Mode_On, };
-enum class Alpha_Output_Mode { kNone = 0, k_Alpha_Mode_On, };
-enum class Search_Depth_Output_Mode { kNone = 0, k_Search_Depth_Mode_On, };
-enum class Board_Mode { kNone = 0, k_Board_Mode_On, };
-enum class Linear_Search_Only_Mode { kNone = 0, k_Linear_Search_Mode_On, };
+enum class Cardinal_Output_Mode { kNone = 0, k_Cardinal_Mode_On, };					 // -c
+enum class Index_Output_Mode { kNone = 0, k_Index_Mode_On, };						 // -i
+enum class Point_Output_Mode { kNone = 0, k_Point_Mode_On, };						 // -p
+enum class Alpha_Output_Mode { kNone = 0, k_Alpha_Mode_On, };					     // -a
+enum class Search_Depth_Output_Mode { kNone = 0, k_Search_Depth_Mode_On, };			 // -s
+enum class Board_Mode { kNone = 0, k_Board_Mode_On, };								 // -b
+enum class Linear_Search_Only_Mode { kNone = 0, k_Linear_Search_Mode_On, };			 // -l
+enum class Word_Hunt_Mode { kNone = 0, k_Word_Hunt_Mode_On, };
+enum class Specify_Length_Mode { kNone = 0, k_Specify_Length_Mode_on, };			 // -x
+enum class Specify_First_Letter_Mode { kNone = 0, k_Specify_First_Letter_Mode_On, }; // -y
+
 
 // Options struct
 struct Options {
@@ -37,8 +41,14 @@ struct Options {
 	Search_Depth_Output_Mode search_depth_output_mode = Search_Depth_Output_Mode::kNone;
 	Board_Mode board_mode = Board_Mode::kNone;
 	Linear_Search_Only_Mode linear_mode = Linear_Search_Only_Mode::kNone;
+	Word_Hunt_Mode word_hunt_mode = Word_Hunt_Mode::kNone;
+	Specify_Length_Mode specify_length_mode = Specify_Length_Mode::kNone;
+	Specify_First_Letter_Mode specify_first_letter_mode = Specify_First_Letter_Mode::kNone;
+
 	int search_depth = 6;					// Default Search Depth value is 6
 	string board_filename = "board.txt";	// Default Board filename is "board.txt"
+	int specified_length = 0;
+	vector<char> specified_first_letters;
 };
 
 
@@ -58,6 +68,27 @@ private:
 	bool linear_on = false;
 	int search_depth = 6;				// Default Search Depth value is 6
 	string board_filename = "board.txt";// Default Board filename is "board.txt"
+	bool specifed_length_on = false;
+	bool specifed_first_letter_on = false;
+	int specified_length = 0;
+	vector<char> specified_first_letters;
+	bool word_hunt_mode = false;
+
+	// Coordinate Compare Functor
+	class Coordinate_Compare {
+	public:
+		// EFFECTS: Returns true if a's priority < b's priority
+		bool operator()(const pair<int, int>& a, const pair<int, int>& b) {
+			if (a.first < b.first) return true;
+			else if (a.first > b.first) return false;
+			else {
+				if (a.second < b.second) return true;
+				return false;
+			}
+		}
+	};
+
+
 
 	// Found Word struct
 	struct Found_Word {
@@ -66,6 +97,7 @@ private:
 		vector<int> index_directions;
 		unsigned int length = 0;
 		pair<int, int> coordinates;
+		priority_queue<pair<int, int>, vector<pair<int, int>>, Coordinate_Compare> c_pq; // Coordinate Priority Queue
 	};
 
 	vector<Found_Word> found_word_vect;
@@ -170,6 +202,16 @@ public:
 		// Change search_depth value if specified
 		if (search_depth_on == true) search_depth = options.search_depth;
 		if (board_on == true) board_filename = options.board_filename;
+
+		// Word Hunt Mode
+		if (options.word_hunt_mode == Word_Hunt_Mode::k_Word_Hunt_Mode_On) word_hunt_mode = true;
+
+		// Specified length/first letter
+		if (options.specify_length_mode == Specify_Length_Mode::k_Specify_Length_Mode_on) specifed_length_on = true;
+		if (options.specify_first_letter_mode == Specify_First_Letter_Mode::k_Specify_First_Letter_Mode_On) specifed_first_letter_on = true;
+		if (specifed_length_on == true) specified_length = options.specified_length;
+		if (specifed_first_letter_on == true) specified_first_letters = options.specified_first_letters;
+
 		create_list();
 	}
 
@@ -392,6 +434,12 @@ public:
 	// EFFECTS: Runs solver for each potential word in word list
 	void run_solver(void) {
 		for (auto word : list_of_words) {
+			if (specifed_length_on == true) {
+				if (word.length() != specified_length) continue;
+			}
+			if (specifed_first_letter_on == true) {
+				if (std::find(specified_first_letters.begin(), specified_first_letters.end(), word[0]) == specified_first_letters.end()) continue;
+			}
 			find_word(word);
 		}
 	}
@@ -685,10 +733,33 @@ public:
 			cout << endl;
 		}
 		cout << endl;
-		cout << "--Search Depth: " << search_depth << "--\n\n";
+		cout << "--Search Depth: " << search_depth << "--";
+		if (specifed_length_on) cout << "\n--Specified Length: " << specified_length << "--";
+		if (specifed_first_letter_on) {
+			cout << "\n--Specified First Letters: ";
+			for (auto letter : specified_first_letters) {
+				cout << letter << ", ";
+			}
+			cout << "--";
+		}
+
+
+		cout << "\n\n";
 	}
 	
 };
+
+// EFFECTS: Given character, returns capitalized 
+// version of the character
+char capital(const char& c) {
+	if (c >= 65 && c <= 90) return c;
+	else if (c >= 97 && c <= 122) return c - 32;
+	else {
+		cout << "Invalid character\n";
+		assert(false);
+	}
+	return 0;
+}
 
 
 void getMode(int argc, char* argv[], Options& options) {
@@ -703,13 +774,16 @@ void getMode(int argc, char* argv[], Options& options) {
 		{ "alpha", no_argument, nullptr, 'a' },
 		{ "search-depth", required_argument, nullptr, 's' },
 		{ "board", required_argument, nullptr, 'b' },
-		{ "linear", no_argument, nullptr, 'l'}						// lowercase 'L'
+		{ "linear", no_argument, nullptr, 'l'},						// lowercase 'L'
+		{ "word-hunt", no_argument, nullptr, 'w'},
+		{ "specify-length", required_argument, nullptr, 'x'},
+		{ "specify-first-letter", required_argument, nullptr, 'y'},
 
 	};  // long_options[]
 
 	// TODO: Fill in the double quotes, to match the mode and help options.
 	// Note: s->no arguments, q->no arguments, h->no arguements, o->required arguments
-	while ((choice = getopt_long(argc, argv, "cipas:b:l", long_options, &index)) != -1) {
+	while ((choice = getopt_long(argc, argv, "cipalws:b:x:y:", long_options, &index)) != -1) {
 		switch (choice) {
 		case 'c': {
 			options.cardinal_output_mode = Cardinal_Output_Mode::k_Cardinal_Mode_On;
@@ -730,17 +804,38 @@ void getMode(int argc, char* argv[], Options& options) {
 		case 's': {
 			options.search_depth_output_mode = Search_Depth_Output_Mode::k_Search_Depth_Mode_On;
 			string arg{ optarg };
-			options.search_depth = stoi(optarg);
+			options.search_depth = stoi(arg);
 			break;
 		}
 		case 'b': {
 			options.board_mode = Board_Mode::k_Board_Mode_On;
 			string arg{ optarg };
-			options.board_filename = optarg;
+			options.board_filename = arg;
 			break;
 		}
 		case 'l': {
 			options.linear_mode = Linear_Search_Only_Mode::k_Linear_Search_Mode_On;
+			break;
+		}
+		case 'w': {
+			options.word_hunt_mode = Word_Hunt_Mode::k_Word_Hunt_Mode_On;
+			break;
+		}
+		case 'x': {
+			options.specify_length_mode = Specify_Length_Mode::k_Specify_Length_Mode_on;
+			string arg{ optarg };
+			options.specified_length = stoi(arg);
+			break;
+		}
+		case 'y': {
+			options.specify_first_letter_mode = Specify_First_Letter_Mode::k_Specify_First_Letter_Mode_On;
+			string arg{ optarg };
+			//assert(arg.size() == 1);
+			//options.specified_first_letter = capital(arg[0]);
+			for (size_t i = 0; i < arg.length(); ++i) {
+				options.specified_first_letters.push_back(capital(arg[i]));
+			}
+			sort(options.specified_first_letters.begin(), options.specified_first_letters.end());
 			break;
 		}
 		default: {

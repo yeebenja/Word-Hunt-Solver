@@ -26,6 +26,7 @@ enum class Point_Output_Mode { kNone = 0, k_Point_Mode_On, };
 enum class Alpha_Output_Mode { kNone = 0, k_Alpha_Mode_On, };
 enum class Search_Depth_Output_Mode { kNone = 0, k_Search_Depth_Mode_On, };
 enum class Board_Mode { kNone = 0, k_Board_Mode_On, };
+enum class Linear_Search_Only_Mode { kNone = 0, k_Linear_Search_Mode_On, };
 
 // Options struct
 struct Options {
@@ -35,6 +36,7 @@ struct Options {
 	Alpha_Output_Mode alpha_output_mode = Alpha_Output_Mode::kNone;
 	Search_Depth_Output_Mode search_depth_output_mode = Search_Depth_Output_Mode::kNone;
 	Board_Mode board_mode = Board_Mode::kNone;
+	Linear_Search_Only_Mode linear_mode = Linear_Search_Only_Mode::kNone;
 	int search_depth = 6;					// Default Search Depth value is 6
 	string board_filename = "board.txt";	// Default Board filename is "board.txt"
 };
@@ -53,6 +55,7 @@ private:
 	bool alpha_on = false;
 	bool search_depth_on = false;
 	bool board_on = false;
+	bool linear_on = false;
 	int search_depth = 6;				// Default Search Depth value is 6
 	string board_filename = "board.txt";// Default Board filename is "board.txt"
 
@@ -140,6 +143,20 @@ private:
 		file.close();
 	}
 
+	// EFFECTS: Returns true if all directions are equal
+	// Note: Start at directions[1] since directions[0] is always 'x'
+	bool all_duplicates(const vector<char>& directions){
+		if (directions.size() == 1) return true;
+		char x = directions[1];
+		//for (auto i : directions) {
+		//	if (x != i) return false;
+		//}
+		for (int i = 1; i < directions.size(); ++i) {
+			if (x != directions[i]) return false;
+		}
+		return true;
+	}
+
 public:
 	// Defualt Constructor
 	Word_Hunt_Solver(const Options& options) : search_depth(6) {
@@ -149,6 +166,7 @@ public:
 		if (options.alpha_output_mode == Alpha_Output_Mode::k_Alpha_Mode_On) alpha_on = true;
 		if (options.search_depth_output_mode == Search_Depth_Output_Mode::k_Search_Depth_Mode_On) search_depth_on = true;
 		if (options.board_mode == Board_Mode::k_Board_Mode_On) board_on = true;
+		if (options.linear_mode == Linear_Search_Only_Mode::k_Linear_Search_Mode_On) linear_on = true;
 		// Change search_depth value if specified
 		if (search_depth_on == true) search_depth = options.search_depth;
 		if (board_on == true) board_filename = options.board_filename;
@@ -165,6 +183,48 @@ public:
 
 	// EFFECTS: Outputs cardinal directions for each found word
 	void cardinal_output(const Found_Word& found_word) {
+
+		if (linear_on) {
+			// check to see if all directions match
+			if (all_duplicates(found_word.cardinal_directions) == true) {
+				cout << found_word.word << "\n";
+				int row = found_word.coordinates.first;
+				int col = found_word.coordinates.second;
+				cout << "Start at row " << row << " col " << col << ", go ";
+				for (auto character : found_word.cardinal_directions) {
+					switch (character) {
+					case 'n':
+						cout << "N ";
+						break;
+					case 'e':
+						cout << "E ";
+						break;
+					case 's':
+						cout << "S ";
+						break;
+					case 'w':
+						cout << "W ";
+						break;
+					case 'a':
+						cout << "NE ";
+						break;
+					case 'b':
+						cout << "SE ";
+						break;
+					case 'c':
+						cout << "SW ";
+						break;
+					case 'd':
+						cout << "NW ";
+						break;
+					}
+				}
+				cout << "\n";
+				return;
+			}
+			else return;
+		}
+
 		int row = found_word.coordinates.first;
 		int col = found_word.coordinates.second;
 		cout << "Start at row " << row << " col " << col << ", go ";
@@ -201,6 +261,48 @@ public:
 	
 	// EFFECTS: Outputs indexes in order of each found word
 	void index_output(const Found_Word& found_word) {
+		if (linear_on) {
+			// check to see if all directions match
+			if (all_duplicates(found_word.cardinal_directions) == true) {
+				cout << found_word.word << "\n";
+				int row = found_word.coordinates.first;
+				int col = found_word.coordinates.second;
+				cout << "Start at row " << row << " col " << col << ", go to ";
+				for (auto character : found_word.cardinal_directions) {
+					switch (character) {
+					case 'n':
+						cout << "row " << --row << " col " << col << ", ";
+						break;
+					case 'e':
+						cout << "row " << row << " col " << ++col << ", ";
+						break;
+					case 's':
+						cout << "row " << ++row << " col " << col << ", ";
+						break;
+					case 'w':
+						cout << "row " << row << " col " << --col << ", ";
+						break;
+					case 'a':
+						cout << "row " << --row << " col " << ++col << ", ";
+						break;
+					case 'b':
+						cout << "row " << ++row << " col " << ++col << ", ";
+						break;
+					case 'c':
+						cout << "row " << ++row << " col " << --col << ", ";
+						break;
+					case 'd':
+						cout << "row " << --row << " col " << --col << ", ";
+						break;
+					}
+				}
+				cout << "\n";
+				return;
+			}
+			else return;
+		}
+
+		
 		int row = found_word.coordinates.first;
 		int col = found_word.coordinates.second;
 		cout << "Start at row " << row << " col " << col << ", go to ";
@@ -240,6 +342,7 @@ public:
 		cout << "---Summary---\n\n";
 		if (point_on) {
 			cout << "---Sorted by Word Length---\n";
+			if (linear_on == true) cout << "\n--Outputting Linear Solutions Only--\n";
 			int current_length = 0;
 			if (!point_pq.empty()) {
 				current_length = point_pq.top().length;
@@ -253,8 +356,7 @@ public:
 					cout << "\n--Length: " << found_word_temp.length << "--\n\n";
 					current_length = found_word_temp.length;
 				}
-
-				cout << found_word_temp.word << "\n";
+				if (linear_on == false) cout << found_word_temp.word << "\n";
 				if (cardinal_on) cardinal_output(found_word_temp);
 				if (index_on) index_output(found_word_temp);
 			}
@@ -263,10 +365,11 @@ public:
 
 		if (alpha_on) {
 			cout << "---Sorted Alphabetically---\n\n";
+			if (linear_on == true) cout << "--Outputting Linear Solutions Only--\n";
 			while (!alpha_pq.empty()) {
 				Found_Word found_word_temp = alpha_pq.top();
 				alpha_pq.pop();
-				cout << found_word_temp.word << "\n";
+				if (linear_on == false) cout << found_word_temp.word << "\n";
 				if (cardinal_on) cardinal_output(found_word_temp);
 				if (index_on) index_output(found_word_temp);
 			}
@@ -274,8 +377,10 @@ public:
 		}
 
 		if (point_on == false && alpha_on == false) {
+			if (linear_on == true) cout << "--Outputting Linear Solutions Only--\n";
 			for (auto found_word : found_word_vect) {
-				cout << found_word.word << "\n";
+				//cout << found_word.word << "\n";
+				if (linear_on == false) cout << found_word.word << "\n";
 				if (cardinal_on) cardinal_output(found_word);
 				if (index_on) index_output(found_word);
 			}
@@ -598,12 +703,13 @@ void getMode(int argc, char* argv[], Options& options) {
 		{ "alpha", no_argument, nullptr, 'a' },
 		{ "search-depth", required_argument, nullptr, 's' },
 		{ "board", required_argument, nullptr, 'b' },
+		{ "linear", no_argument, nullptr, 'l'}						// lowercase 'L'
 
 	};  // long_options[]
 
 	// TODO: Fill in the double quotes, to match the mode and help options.
 	// Note: s->no arguments, q->no arguments, h->no arguements, o->required arguments
-	while ((choice = getopt_long(argc, argv, "cipas:b:", long_options, &index)) != -1) {
+	while ((choice = getopt_long(argc, argv, "cipas:b:l", long_options, &index)) != -1) {
 		switch (choice) {
 		case 'c': {
 			options.cardinal_output_mode = Cardinal_Output_Mode::k_Cardinal_Mode_On;
@@ -631,6 +737,10 @@ void getMode(int argc, char* argv[], Options& options) {
 			options.board_mode = Board_Mode::k_Board_Mode_On;
 			string arg{ optarg };
 			options.board_filename = optarg;
+			break;
+		}
+		case 'l': {
+			options.linear_mode = Linear_Search_Only_Mode::k_Linear_Search_Mode_On;
 			break;
 		}
 		default: {

@@ -41,4 +41,6 @@ Specify Length Mode -x: If specified, requires an argument that is an integer. O
 
 Specify First Letter Mode -y: If specified, requires an argument that is a string of letters. Only words that alphabetically start with these specified letters will be outputted. 
 
-
+# 👻 Side Notes 👻
+- This project indirectly made my Word Search Solver Project redundant due to the Word Hunt Solver did not need a specified work bank. In addition, the user can specify the -l options to output linear solutions only, which is ideal for word searches. In testing, I found that Word Hunt Solver runs circles around Word Search Solver in terms of runtime. At the time, I did not take my Data Structures and Algorithms class when I made Word Search Solver, but currently at the time of writing this, I am in Data Structures and Algorithms. It really helped! 
+Example: 

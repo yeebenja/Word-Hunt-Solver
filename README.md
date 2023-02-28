@@ -5,8 +5,7 @@ I've always wanted to beat my friends in Word Hunt, so I built a solver that giv
 # 💥 Demo 💥
 Board input file:
 
-<img width="163" alt="image" src="https://user-images.githubusercontent.com/95982168/221713779-ffd2730e-8b3a-4131-8fa8-7bc8eddeaec8.png">
-
+<img width="152" alt="image" src="https://user-images.githubusercontent.com/95982168/221717785-c4d25a57-56bf-401b-b186-26e83924fc4a.png">
 Output:
 
 <img width="272" alt="image" src="https://user-images.githubusercontent.com/95982168/221714134-7ab55004-af98-44e0-9cd1-644e1b6c9a30.png">

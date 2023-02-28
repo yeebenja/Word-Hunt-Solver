@@ -46,5 +46,5 @@ Specify First Letter Mode -y: If specified, requires an argument that is a strin
 
 Example: Using Chinese New Year Themed Word Search
 
-<img width="304" alt="image" src="https://user-images.githubusercontent.com/95982168/221722601-1ad760f8-8665-41dd-9924-e5061df03fb9.png">
+<img width="362" alt="image" src="https://user-images.githubusercontent.com/95982168/221723585-8f7ccda1-9850-4603-849c-dd0a372a7cd1.png"> <img width="357" alt="image" src="https://user-images.githubusercontent.com/95982168/221723656-f2c03163-277a-4253-bf95-c993b294ba83.png">
 

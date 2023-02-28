@@ -11,7 +11,7 @@ Board input file:
 
 Output:
 
-<img width="377" alt="image" src="https://user-images.githubusercontent.com/95982168/221717858-50f5625d-d3ba-41fb-bba3-5d8be85754d7.png"> <img width="340" alt="image" src="https://user-images.githubusercontent.com/95982168/221724066-f48ff66a-a6c0-4e53-8b91-53c6fc8ec62b.png"> <img width="343" alt="image" src="https://user-images.githubusercontent.com/95982168/221724181-0d0fb08b-b71b-4cc4-8a87-5f929ecd12c3.png">
+<img width="350" alt="image" src="https://user-images.githubusercontent.com/95982168/221717858-50f5625d-d3ba-41fb-bba3-5d8be85754d7.png"> <img width="340" alt="image" src="https://user-images.githubusercontent.com/95982168/221724066-f48ff66a-a6c0-4e53-8b91-53c6fc8ec62b.png"> <img width="343" alt="image" src="https://user-images.githubusercontent.com/95982168/221724181-0d0fb08b-b71b-4cc4-8a87-5f929ecd12c3.png">
 
 
 

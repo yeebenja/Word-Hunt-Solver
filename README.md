@@ -32,6 +32,7 @@ Search Depth -s (Fun to play around with, but nor required): Requires an argumen
 Board -b (required): Requires argument that specifies what board file the Word Hunt Solver should read.
 
 Linear Search Only -l (lowercase L): If specified, only solutions that are linear are outputted.
+
 Example:
 
 <img width="152" alt="image" src="https://user-images.githubusercontent.com/95982168/221717506-08920059-7ff5-47f0-aefb-e456740c9ee1.png">

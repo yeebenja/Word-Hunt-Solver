@@ -47,5 +47,6 @@ Specify First Letter Mode -y: If specified, requires an argument that is a strin
 Example: Using Chinese New Year Themed Word Search
 Command Line Arguments: -c -w -p -l -b chinese_new_year_board.txt -s 20>output.txt
 
-<img width="362" alt="image" src="https://user-images.githubusercontent.com/95982168/221723585-8f7ccda1-9850-4603-849c-dd0a372a7cd1.png"> <img width="357" alt="image" src="https://user-images.githubusercontent.com/95982168/221723656-f2c03163-277a-4253-bf95-c993b294ba83.png">
+<img width="362" alt="image" src="https://user-images.githubusercontent.com/95982168/221723585-8f7ccda1-9850-4603-849c-dd0a372a7cd1.png"> <img width="357" alt="image" src="https://user-images.githubusercontent.com/95982168/221723656-f2c03163-277a-4253-bf95-c993b294ba83.png"> <img width="265" alt="image" src="https://user-images.githubusercontent.com/95982168/221723990-ae84c57b-23c9-4f32-b73a-dcdb2c7c0340.png">
+
 

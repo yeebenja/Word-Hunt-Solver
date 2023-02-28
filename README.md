@@ -6,9 +6,10 @@ I've always wanted to beat my friends in Word Hunt, so I built a solver that giv
 Board input file:
 
 <img width="152" alt="image" src="https://user-images.githubusercontent.com/95982168/221717785-c4d25a57-56bf-401b-b186-26e83924fc4a.png">
+
 Output:
 
-<img width="272" alt="image" src="https://user-images.githubusercontent.com/95982168/221714134-7ab55004-af98-44e0-9cd1-644e1b6c9a30.png">
+<img width="377" alt="image" src="https://user-images.githubusercontent.com/95982168/221717858-50f5625d-d3ba-41fb-bba3-5d8be85754d7.png">
 
 # 👓 Specification 👓
 This program uses many command line options. Each command line option is thoroughly discussed here:

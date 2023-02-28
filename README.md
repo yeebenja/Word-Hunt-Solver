@@ -11,7 +11,9 @@ Board input file:
 
 Output:
 
-<img width="377" alt="image" src="https://user-images.githubusercontent.com/95982168/221717858-50f5625d-d3ba-41fb-bba3-5d8be85754d7.png">
+<img width="377" alt="image" src="https://user-images.githubusercontent.com/95982168/221717858-50f5625d-d3ba-41fb-bba3-5d8be85754d7.png"> <img width="370" alt="image" src="https://user-images.githubusercontent.com/95982168/221724066-f48ff66a-a6c0-4e53-8b91-53c6fc8ec62b.png"> <img width="411" alt="image" src="https://user-images.githubusercontent.com/95982168/221724108-490f92ad-29da-47b3-9cbe-5fca00f0e500.png">
+
+
 
 # 👓 Specification 👓
 This program uses many command line options. Each command line option is thoroughly discussed here:

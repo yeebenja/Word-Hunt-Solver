@@ -45,6 +45,7 @@ Specify First Letter Mode -y: If specified, requires an argument that is a strin
 - This project indirectly made my Word Search Solver Project redundant due to the Word Hunt Solver did not need a specified work bank. In addition, the user can specify the -l options to output linear solutions only, which is ideal for word searches. In testing, I found that Word Hunt Solver runs circles around Word Search Solver in terms of runtime. At the time, I did not take my Data Structures and Algorithms class when I made Word Search Solver, but currently at the time of writing this, I am in Data Structures and Algorithms. It really helped! 
 
 Example: Using Chinese New Year Themed Word Search
+Command Line Arguments: -c -w -p -l -b chinese_new_year_board.txt -s 20>output.txt
 
 <img width="362" alt="image" src="https://user-images.githubusercontent.com/95982168/221723585-8f7ccda1-9850-4603-849c-dd0a372a7cd1.png"> <img width="357" alt="image" src="https://user-images.githubusercontent.com/95982168/221723656-f2c03163-277a-4253-bf95-c993b294ba83.png">
 

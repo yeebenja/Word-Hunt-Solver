@@ -3,6 +3,8 @@
 I've always wanted to beat my friends in Word Hunt, so I built a solver that gives me all possible solutions given a board of letters. This program employs a recursive search algorithm that looks for words in all directions including words that do not have a straight path.
 
 # 💥 Demo 💥
+![ezgif com-optimize](https://user-images.githubusercontent.com/95982168/221720628-d6f84277-52ca-495b-9364-3d96b9e0d5c2.gif)
+
 Board input file:
 
 <img width="152" alt="image" src="https://user-images.githubusercontent.com/95982168/221717785-c4d25a57-56bf-401b-b186-26e83924fc4a.png">

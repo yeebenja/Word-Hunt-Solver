@@ -16,7 +16,7 @@ Output:
 
 
 
-# 👓 Specification 👓
+# 🥸 Specification 🥸
 This program uses many command line options. Each command line option is thoroughly discussed here:
 
 Cardinal Output -c (Recommended): Displays found word's starting position, then traces out the found word using cardinal directions.

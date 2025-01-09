@@ -1,11 +1,6 @@
 // Word Hunt Solver (for GamePigeon iMessage Word Hunt Game)
-// By: Benjamin Yee (Yu Anmin / Yeo Anmin)
-// Email: yeebenja@umich.edu
-// LinkedIn: https://www.linkedin.com/in/yeebenja/
-// GitHub: https://github.com/yeebenja
 
 #include <iostream>
-#include <map>
 #include <fstream>
 #include <string>
 #include <cassert>

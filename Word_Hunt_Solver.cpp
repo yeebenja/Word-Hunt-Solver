@@ -472,10 +472,10 @@ public:
 		int depth = 0;
 		int size_of_word = (int) word.length();
 		vector<char> directions;
-		pair<int, int> original_gangster;	// original ganster = original coordinates of word (row,col)
-		original_gangster.first = row;
-		original_gangster.second = col;
-		look_recursive(word, row, col, depth, size_of_word, 'x', directions, original_gangster); // x is starting at beginning
+		pair<int, int> original;	// original = original coordinates of word (row,col)
+		original.first = row;
+		original.second = col;
+		look_recursive(word, row, col, depth, size_of_word, 'x', directions, original); // x is starting at beginning
 		
 	}
 
@@ -556,7 +556,7 @@ public:
 
 	// EFFECTS: Looks in all directions recursively
 	void look_recursive(const string word, int row, int col, int depth, 
-		int size_of_word, char prev, vector<char>& directions, const pair<int, int>& original_gangster) {
+		int size_of_word, char prev, vector<char>& directions, const pair<int, int>& original) {
 
 		directions.push_back(prev);
 
@@ -586,7 +586,7 @@ public:
 			Found_Word found_word;
 			found_word.word = word;
 			found_word.length = size_of_word;
-			found_word.coordinates = original_gangster;
+			found_word.coordinates = original;
 			if (cardinal_on) found_word.cardinal_directions = directions;
 			assert(found_word.cardinal_directions.size() == found_word.word.length()); // for debugging purposes (sanity check)
 			if (word_hunt_mode_on == true) {
@@ -607,157 +607,157 @@ public:
 		switch (prev) {
 		case 'x': {
 			// North
-			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original_gangster);
+			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original);
 			// Northeast
-			look_recursive(word, row - 1, col + 1, depth + 1, size_of_word, 'a', directions, original_gangster);
+			look_recursive(word, row - 1, col + 1, depth + 1, size_of_word, 'a', directions, original);
 			// East
-			look_recursive(word, row, col + 1, depth + 1, size_of_word, 'e', directions, original_gangster);
+			look_recursive(word, row, col + 1, depth + 1, size_of_word, 'e', directions, original);
 			// Southeast
-			look_recursive(word, row + 1, col + 1, depth + 1, size_of_word, 'b', directions, original_gangster);
+			look_recursive(word, row + 1, col + 1, depth + 1, size_of_word, 'b', directions, original);
 			// South
-			look_recursive(word, row + 1, col, depth + 1, size_of_word, 's', directions, original_gangster);
+			look_recursive(word, row + 1, col, depth + 1, size_of_word, 's', directions, original);
 			// Southwest
-			look_recursive(word, row + 1, col - 1, depth + 1, size_of_word, 'c', directions, original_gangster);
+			look_recursive(word, row + 1, col - 1, depth + 1, size_of_word, 'c', directions, original);
 			// West
-			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original_gangster);
+			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original);
 			// Northwest
-			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original_gangster);
+			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original);
 			break;
 		}
 		case 'n': {
 			// North
-			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original_gangster);
+			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original);
 			// Northeast
-			look_recursive(word, row - 1, col + 1, depth + 1, size_of_word, 'a', directions, original_gangster);
+			look_recursive(word, row - 1, col + 1, depth + 1, size_of_word, 'a', directions, original);
 			// East
-			look_recursive(word, row, col + 1, depth + 1, size_of_word, 'e', directions, original_gangster);
+			look_recursive(word, row, col + 1, depth + 1, size_of_word, 'e', directions, original);
 			// Southeast
-			look_recursive(word, row + 1, col + 1, depth + 1, size_of_word, 'b', directions, original_gangster);
+			look_recursive(word, row + 1, col + 1, depth + 1, size_of_word, 'b', directions, original);
 			// Southwest
-			look_recursive(word, row + 1, col - 1, depth + 1, size_of_word, 'c', directions, original_gangster);
+			look_recursive(word, row + 1, col - 1, depth + 1, size_of_word, 'c', directions, original);
 			// West
-			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original_gangster);
+			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original);
 			// Northwest
-			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original_gangster);
+			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original);
 			break;
 		}
 		case 'a':{
 			// North
-			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original_gangster);
+			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original);
 			// Northeast
-			look_recursive(word, row - 1, col + 1, depth + 1, size_of_word, 'a', directions, original_gangster);
+			look_recursive(word, row - 1, col + 1, depth + 1, size_of_word, 'a', directions, original);
 			// East
-			look_recursive(word, row, col + 1, depth + 1, size_of_word, 'e', directions, original_gangster);
+			look_recursive(word, row, col + 1, depth + 1, size_of_word, 'e', directions, original);
 			// Southeast
-			look_recursive(word, row + 1, col + 1, depth + 1, size_of_word, 'b', directions, original_gangster);
+			look_recursive(word, row + 1, col + 1, depth + 1, size_of_word, 'b', directions, original);
 			// South
-			look_recursive(word, row + 1, col, depth + 1, size_of_word, 's', directions, original_gangster);
+			look_recursive(word, row + 1, col, depth + 1, size_of_word, 's', directions, original);
 			// West
-			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original_gangster);
+			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original);
 			// Northwest
-			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original_gangster);
+			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original);
 			break;
 		}
 		case 'e': {
 			// North
-			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original_gangster);
+			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original);
 			// Northeast
-			look_recursive(word, row - 1, col + 1, depth + 1, size_of_word, 'a', directions, original_gangster);
+			look_recursive(word, row - 1, col + 1, depth + 1, size_of_word, 'a', directions, original);
 			// East
-			look_recursive(word, row, col + 1, depth + 1, size_of_word, 'e', directions, original_gangster);
+			look_recursive(word, row, col + 1, depth + 1, size_of_word, 'e', directions, original);
 			// Southeast
-			look_recursive(word, row + 1, col + 1, depth + 1, size_of_word, 'b', directions, original_gangster);
+			look_recursive(word, row + 1, col + 1, depth + 1, size_of_word, 'b', directions, original);
 			// South
-			look_recursive(word, row + 1, col, depth + 1, size_of_word, 's', directions, original_gangster);
+			look_recursive(word, row + 1, col, depth + 1, size_of_word, 's', directions, original);
 			// Southwest
-			look_recursive(word, row + 1, col - 1, depth + 1, size_of_word, 'c', directions, original_gangster);
+			look_recursive(word, row + 1, col - 1, depth + 1, size_of_word, 'c', directions, original);
 			// Northwest
-			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original_gangster);
+			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original);
 			break;
 		}
 		case 'b': {
 			// North
-			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original_gangster);
+			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original);
 			// Northeast
-			look_recursive(word, row - 1, col + 1, depth + 1, size_of_word, 'a', directions, original_gangster);
+			look_recursive(word, row - 1, col + 1, depth + 1, size_of_word, 'a', directions, original);
 			// East
-			look_recursive(word, row, col + 1, depth + 1, size_of_word, 'e', directions, original_gangster);
+			look_recursive(word, row, col + 1, depth + 1, size_of_word, 'e', directions, original);
 			// Southeast
-			look_recursive(word, row + 1, col + 1, depth + 1, size_of_word, 'b', directions, original_gangster);
+			look_recursive(word, row + 1, col + 1, depth + 1, size_of_word, 'b', directions, original);
 			// South
-			look_recursive(word, row + 1, col, depth + 1, size_of_word, 's', directions, original_gangster);
+			look_recursive(word, row + 1, col, depth + 1, size_of_word, 's', directions, original);
 			// Southwest
-			look_recursive(word, row + 1, col - 1, depth + 1, size_of_word, 'c', directions, original_gangster);
+			look_recursive(word, row + 1, col - 1, depth + 1, size_of_word, 'c', directions, original);
 			// West
-			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original_gangster);
+			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original);
 			break;
 		}
 		case 's':{
 			// Northeast
-			look_recursive(word, row - 1, col + 1, depth + 1, size_of_word, 'a', directions, original_gangster);
+			look_recursive(word, row - 1, col + 1, depth + 1, size_of_word, 'a', directions, original);
 			// East
-			look_recursive(word, row, col + 1, depth + 1, size_of_word, 'e', directions, original_gangster);
+			look_recursive(word, row, col + 1, depth + 1, size_of_word, 'e', directions, original);
 			// Southeast
-			look_recursive(word, row + 1, col + 1, depth + 1, size_of_word, 'b', directions, original_gangster);
+			look_recursive(word, row + 1, col + 1, depth + 1, size_of_word, 'b', directions, original);
 			// South
-			look_recursive(word, row + 1, col, depth + 1, size_of_word, 's', directions, original_gangster);
+			look_recursive(word, row + 1, col, depth + 1, size_of_word, 's', directions, original);
 			// Southwest
-			look_recursive(word, row + 1, col - 1, depth + 1, size_of_word, 'c', directions, original_gangster);
+			look_recursive(word, row + 1, col - 1, depth + 1, size_of_word, 'c', directions, original);
 			// West
-			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original_gangster);
+			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original);
 			// Northwest
-			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original_gangster);
+			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original);
 			break;
 		}
 		case 'c': {
 			// North
-			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original_gangster);
+			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original);
 			// East
-			look_recursive(word, row, col + 1, depth + 1, size_of_word, 'e', directions, original_gangster);
+			look_recursive(word, row, col + 1, depth + 1, size_of_word, 'e', directions, original);
 			// Southeast
-			look_recursive(word, row + 1, col + 1, depth + 1, size_of_word, 'b', directions, original_gangster);
+			look_recursive(word, row + 1, col + 1, depth + 1, size_of_word, 'b', directions, original);
 			// South
-			look_recursive(word, row + 1, col, depth + 1, size_of_word, 's', directions, original_gangster);
+			look_recursive(word, row + 1, col, depth + 1, size_of_word, 's', directions, original);
 			// Southwest
-			look_recursive(word, row + 1, col - 1, depth + 1, size_of_word, 'c', directions, original_gangster);
+			look_recursive(word, row + 1, col - 1, depth + 1, size_of_word, 'c', directions, original);
 			// West
-			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original_gangster);
+			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original);
 			// Northwest
-			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original_gangster);
+			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original);
 			break;
 		}
 		case 'w':{
 			// North
-			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original_gangster);
+			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original);
 			// Northeast
-			look_recursive(word, row - 1, col + 1, depth + 1, size_of_word, 'a', directions, original_gangster);
+			look_recursive(word, row - 1, col + 1, depth + 1, size_of_word, 'a', directions, original);
 			// Southeast
-			look_recursive(word, row + 1, col + 1, depth + 1, size_of_word, 'b', directions, original_gangster);
+			look_recursive(word, row + 1, col + 1, depth + 1, size_of_word, 'b', directions, original);
 			// South
-			look_recursive(word, row + 1, col, depth + 1, size_of_word, 's', directions, original_gangster);
+			look_recursive(word, row + 1, col, depth + 1, size_of_word, 's', directions, original);
 			// Southwest
-			look_recursive(word, row + 1, col - 1, depth + 1, size_of_word, 'c', directions, original_gangster);
+			look_recursive(word, row + 1, col - 1, depth + 1, size_of_word, 'c', directions, original);
 			// West
-			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original_gangster);
+			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original);
 			// Northwest
-			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original_gangster);
+			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original);
 			break;
 		}
 		case 'd': {
 			// North
-			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original_gangster);
+			look_recursive(word, row - 1, col, depth + 1, size_of_word, 'n', directions, original);
 			// Northeast
-			look_recursive(word, row - 1, col + 1, depth + 1, size_of_word, 'a', directions, original_gangster);
+			look_recursive(word, row - 1, col + 1, depth + 1, size_of_word, 'a', directions, original);
 			// East
-			look_recursive(word, row, col + 1, depth + 1, size_of_word, 'e', directions, original_gangster);
+			look_recursive(word, row, col + 1, depth + 1, size_of_word, 'e', directions, original);
 			// South
-			look_recursive(word, row + 1, col, depth + 1, size_of_word, 's', directions, original_gangster);
+			look_recursive(word, row + 1, col, depth + 1, size_of_word, 's', directions, original);
 			// Southwest
-			look_recursive(word, row + 1, col - 1, depth + 1, size_of_word, 'c', directions, original_gangster);
+			look_recursive(word, row + 1, col - 1, depth + 1, size_of_word, 'c', directions, original);
 			// West
-			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original_gangster);
+			look_recursive(word, row, col - 1, depth + 1, size_of_word, 'w', directions, original);
 			// Northwest
-			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original_gangster);
+			look_recursive(word, row - 1, col - 1, depth + 1, size_of_word, 'd', directions, original);
 			break;
 		}
 		default: {
@@ -934,9 +934,9 @@ void getMode(int argc, char* argv[], Options& options) {
 // Main function
 int main(int argc, char** argv) {
 	
-	Options i_got_options; // I can pass that {  } like stockton
-	getMode(argc, argv, i_got_options); // just joshin ima spend this holiday locked in
-	Word_Hunt_Solver solver_1(i_got_options);
+	Options options;
+	getMode(argc, argv, options);
+	Word_Hunt_Solver solver_1(options);
 	solver_1.run();
 
 	return 0;
